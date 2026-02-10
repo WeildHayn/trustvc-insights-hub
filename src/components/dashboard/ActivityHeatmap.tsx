@@ -33,7 +33,7 @@ export function ActivityHeatmap({ filter }: ActivityHeatmapProps) {
 
   return (
     <section className="space-y-4">
-      <h2 className="text-xl font-semibold">24h Activity Heatmap / Ticker</h2>
+      <h2 className="text-xl font-semibold">Activity Heatmap / Ticker</h2>
       
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

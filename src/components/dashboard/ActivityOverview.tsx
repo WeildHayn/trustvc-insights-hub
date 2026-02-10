@@ -45,6 +45,7 @@ export function ActivityOverview({ filter }: ActivityOverviewProps) {
                       backgroundColor: 'hsl(var(--popover))',
                       border: '1px solid hsl(var(--border))',
                       borderRadius: '6px',
+                      color: 'hsl(var(--popover-foreground))',
                     }}
                     formatter={(value: number, name: string) => [value.toLocaleString(), name.charAt(0).toUpperCase() + name.slice(1)]}
                     labelFormatter={(label) => `Date: ${label}`}
@@ -94,6 +95,7 @@ export function ActivityOverview({ filter }: ActivityOverviewProps) {
                       backgroundColor: 'hsl(var(--popover))',
                       border: '1px solid hsl(var(--border))',
                       borderRadius: '6px',
+                      color: 'hsl(var(--popover-foreground))',
                     }}
                     formatter={(value: number, name: string) => [value.toLocaleString(), name.charAt(0).toUpperCase() + name.slice(1)]}
                     labelFormatter={(label) => `Date: ${label}`}
