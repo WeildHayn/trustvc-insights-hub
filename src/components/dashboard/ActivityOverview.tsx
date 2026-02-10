@@ -11,8 +11,8 @@ interface ActivityOverviewProps {
 const timeRanges: TimeRange[] = ['1M', '3M', '6M', '1Y', '5Y', 'ALL'];
 
 export function ActivityOverview({ filter }: ActivityOverviewProps) {
-  const [activityTimeRange, setActivityTimeRange] = useState<TimeRange>('6M');
-  const [integrationsTimeRange, setIntegrationsTimeRange] = useState<TimeRange>('6M');
+  const [activityTimeRange, setActivityTimeRange] = useState<TimeRange>('1M');
+  const [integrationsTimeRange, setIntegrationsTimeRange] = useState<TimeRange>('1M');
 
   const activityData = getActivityData(filter, activityTimeRange);
   const integrationsData = getIntegrationsData(filter, integrationsTimeRange);
@@ -46,6 +46,8 @@ export function ActivityOverview({ filter }: ActivityOverviewProps) {
                       border: '1px solid hsl(var(--border))',
                       borderRadius: '6px',
                     }}
+                    formatter={(value: number, name: string) => [value.toLocaleString(), name.charAt(0).toUpperCase() + name.slice(1)]}
+                    labelFormatter={(label) => `Date: ${label}`}
                   />
                   <Legend />
                   <Line
@@ -93,6 +95,8 @@ export function ActivityOverview({ filter }: ActivityOverviewProps) {
                       border: '1px solid hsl(var(--border))',
                       borderRadius: '6px',
                     }}
+                    formatter={(value: number, name: string) => [value.toLocaleString(), name.charAt(0).toUpperCase() + name.slice(1)]}
+                    labelFormatter={(label) => `Date: ${label}`}
                   />
                   <Legend />
                   <Bar

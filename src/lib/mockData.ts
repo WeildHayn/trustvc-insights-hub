@@ -6,6 +6,24 @@ export type MapTimeRange = '1D' | '5D' | '1M' | '6M' | '1Y';
 
 // Activity Overview - Issuance vs Verification
 export const getActivityData = (filter: FilterType, timeRange: TimeRange) => {
+  const multiplier = filter === 'verifiable-docs' ? 0.7 : filter === 'etr' ? 0.3 : 1;
+
+  // For 1M, show daily granularity (last 30 days)
+  if (timeRange === '1M') {
+    const dailyData = [];
+    const now = new Date();
+    for (let i = 29; i >= 0; i--) {
+      const d = new Date(now);
+      d.setDate(d.getDate() - i);
+      dailyData.push({
+        month: `${d.getMonth() + 1}/${d.getDate()}`,
+        issuance: Math.round((120 + Math.random() * 180) * multiplier),
+        verification: Math.round((80 + Math.random() * 220) * multiplier),
+      });
+    }
+    return dailyData;
+  }
+
   const baseData = [
     { month: 'Jan', issuance: 4000, verification: 2400 },
     { month: 'Feb', issuance: 3000, verification: 1398 },
@@ -21,8 +39,6 @@ export const getActivityData = (filter: FilterType, timeRange: TimeRange) => {
     { month: 'Dec', issuance: 5000, verification: 6200 },
   ];
 
-  const multiplier = filter === 'verifiable-docs' ? 0.7 : filter === 'etr' ? 0.3 : 1;
-  
   const rangeMap: Record<TimeRange, number> = {
     '1M': 1,
     '3M': 3,
@@ -41,6 +57,24 @@ export const getActivityData = (filter: FilterType, timeRange: TimeRange) => {
 
 // Active Integrations MoM
 export const getIntegrationsData = (filter: FilterType, timeRange: TimeRange) => {
+  const multiplier = filter === 'verifiable-docs' ? 0.6 : filter === 'etr' ? 0.4 : 1;
+
+  // For 1M, show daily granularity
+  if (timeRange === '1M') {
+    const dailyData = [];
+    const now = new Date();
+    for (let i = 29; i >= 0; i--) {
+      const d = new Date(now);
+      d.setDate(d.getDate() - i);
+      dailyData.push({
+        month: `${d.getMonth() + 1}/${d.getDate()}`,
+        integrations: Math.round((40 + Math.random() * 30) * multiplier),
+        growth: Math.round((Math.random() - 0.3) * 20),
+      });
+    }
+    return dailyData;
+  }
+
   const baseData = [
     { month: 'Jan', integrations: 45, growth: 12 },
     { month: 'Feb', integrations: 52, growth: 15 },
@@ -56,8 +90,6 @@ export const getIntegrationsData = (filter: FilterType, timeRange: TimeRange) =>
     { month: 'Dec', integrations: 105, growth: 7 },
   ];
 
-  const multiplier = filter === 'verifiable-docs' ? 0.6 : filter === 'etr' ? 0.4 : 1;
-  
   const rangeMap: Record<TimeRange, number> = {
     '1M': 1,
     '3M': 3,
