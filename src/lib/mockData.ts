@@ -4,26 +4,65 @@ export type FilterType = 'all' | 'verifiable-docs' | 'etr';
 export type TimeRange = '1M' | '3M' | '6M' | '1Y' | '5Y' | 'ALL';
 export type MapTimeRange = '1D' | '5D' | '1M' | '6M' | '1Y';
 
+// Helper: generate daily data points
+const generateDailyData = (days: number, multiplier: number, type: 'activity' | 'integrations') => {
+  const data = [];
+  const now = new Date();
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - i);
+    const label = `${d.getMonth() + 1}/${d.getDate()}`;
+    if (type === 'activity') {
+      data.push({
+        month: label,
+        issuance: Math.round((120 + Math.random() * 180) * multiplier),
+        verification: Math.round((80 + Math.random() * 220) * multiplier),
+      });
+    } else {
+      data.push({
+        month: label,
+        integrations: Math.round((40 + Math.random() * 30) * multiplier),
+        growth: Math.round((Math.random() - 0.3) * 20),
+      });
+    }
+  }
+  return data;
+};
+
+// Helper: generate weekly data points
+const generateWeeklyData = (weeks: number, multiplier: number, type: 'activity' | 'integrations') => {
+  const data = [];
+  const now = new Date();
+  for (let i = weeks - 1; i >= 0; i--) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - i * 7);
+    const label = `${d.getMonth() + 1}/${d.getDate()}`;
+    if (type === 'activity') {
+      data.push({
+        month: label,
+        issuance: Math.round((800 + Math.random() * 1200) * multiplier),
+        verification: Math.round((500 + Math.random() * 1500) * multiplier),
+      });
+    } else {
+      data.push({
+        month: label,
+        integrations: Math.round((45 + Math.random() * 35) * multiplier),
+        growth: Math.round((Math.random() - 0.3) * 20),
+      });
+    }
+  }
+  return data;
+};
+
 // Activity Overview - Issuance vs Verification
 export const getActivityData = (filter: FilterType, timeRange: TimeRange) => {
   const multiplier = filter === 'verifiable-docs' ? 0.7 : filter === 'etr' ? 0.3 : 1;
 
-  // For 1M, show daily granularity (last 30 days)
-  if (timeRange === '1M') {
-    const dailyData = [];
-    const now = new Date();
-    for (let i = 29; i >= 0; i--) {
-      const d = new Date(now);
-      d.setDate(d.getDate() - i);
-      dailyData.push({
-        month: `${d.getMonth() + 1}/${d.getDate()}`,
-        issuance: Math.round((120 + Math.random() * 180) * multiplier),
-        verification: Math.round((80 + Math.random() * 220) * multiplier),
-      });
-    }
-    return dailyData;
-  }
+  if (timeRange === '1M') return generateDailyData(30, multiplier, 'activity');
+  if (timeRange === '3M') return generateWeeklyData(13, multiplier, 'activity');
+  if (timeRange === '6M') return generateWeeklyData(26, multiplier, 'activity');
 
+  // 1Y, 5Y, ALL → monthly
   const baseData = [
     { month: 'Jan', issuance: 4000, verification: 2400 },
     { month: 'Feb', issuance: 3000, verification: 1398 },
@@ -39,16 +78,7 @@ export const getActivityData = (filter: FilterType, timeRange: TimeRange) => {
     { month: 'Dec', issuance: 5000, verification: 6200 },
   ];
 
-  const rangeMap: Record<TimeRange, number> = {
-    '1M': 1,
-    '3M': 3,
-    '6M': 6,
-    '1Y': 12,
-    '5Y': 12,
-    'ALL': 12,
-  };
-
-  return baseData.slice(-rangeMap[timeRange]).map(d => ({
+  return baseData.map(d => ({
     ...d,
     issuance: Math.round(d.issuance * multiplier),
     verification: Math.round(d.verification * multiplier),
@@ -59,21 +89,9 @@ export const getActivityData = (filter: FilterType, timeRange: TimeRange) => {
 export const getIntegrationsData = (filter: FilterType, timeRange: TimeRange) => {
   const multiplier = filter === 'verifiable-docs' ? 0.6 : filter === 'etr' ? 0.4 : 1;
 
-  // For 1M, show daily granularity
-  if (timeRange === '1M') {
-    const dailyData = [];
-    const now = new Date();
-    for (let i = 29; i >= 0; i--) {
-      const d = new Date(now);
-      d.setDate(d.getDate() - i);
-      dailyData.push({
-        month: `${d.getMonth() + 1}/${d.getDate()}`,
-        integrations: Math.round((40 + Math.random() * 30) * multiplier),
-        growth: Math.round((Math.random() - 0.3) * 20),
-      });
-    }
-    return dailyData;
-  }
+  if (timeRange === '1M') return generateDailyData(30, multiplier, 'integrations');
+  if (timeRange === '3M') return generateWeeklyData(13, multiplier, 'integrations');
+  if (timeRange === '6M') return generateWeeklyData(26, multiplier, 'integrations');
 
   const baseData = [
     { month: 'Jan', integrations: 45, growth: 12 },
@@ -90,16 +108,7 @@ export const getIntegrationsData = (filter: FilterType, timeRange: TimeRange) =>
     { month: 'Dec', integrations: 105, growth: 7 },
   ];
 
-  const rangeMap: Record<TimeRange, number> = {
-    '1M': 1,
-    '3M': 3,
-    '6M': 6,
-    '1Y': 12,
-    '5Y': 12,
-    'ALL': 12,
-  };
-
-  return baseData.slice(-rangeMap[timeRange]).map(d => ({
+  return baseData.map(d => ({
     ...d,
     integrations: Math.round(d.integrations * multiplier),
   }));
@@ -227,14 +236,17 @@ export const getMapActivityData = (filter: FilterType, timeRange: MapTimeRange) 
 // Version Distribution Data
 export const getVersionData = (filter: FilterType, dateRange?: { from: Date; to: Date }) => {
   const baseData = [
-    { version: 'v2.4.1', instances: 1250, releaseDate: '2025-12-01', status: 'current' },
-    { version: 'v2.4.0', instances: 890, releaseDate: '2025-10-15', status: 'stable' },
-    { version: 'v2.3.2', instances: 650, releaseDate: '2025-08-20', status: 'stable' },
-    { version: 'v2.3.1', instances: 420, releaseDate: '2025-06-10', status: 'deprecated' },
-    { version: 'v2.3.0', instances: 280, releaseDate: '2025-04-05', status: 'deprecated' },
-    { version: 'v2.2.0', instances: 150, releaseDate: '2025-01-20', status: 'legacy' },
-    { version: 'v2.1.0', instances: 85, releaseDate: '2024-10-01', status: 'legacy' },
-    { version: 'v2.0.0', instances: 45, releaseDate: '2024-06-15', status: 'legacy' },
+    { version: 'v2.4.1', instances: 1250, releaseDate: '2025-12-01' },
+    { version: 'v2.4.0', instances: 890, releaseDate: '2025-10-15' },
+    { version: 'v2.3.2', instances: 650, releaseDate: '2025-08-20' },
+    { version: 'v2.3.1', instances: 420, releaseDate: '2025-06-10' },
+    { version: 'v2.3.0', instances: 280, releaseDate: '2025-04-05' },
+    { version: 'v2.2.0', instances: 150, releaseDate: '2025-01-20' },
+    { version: 'v2.1.0', instances: 85, releaseDate: '2024-10-01' },
+    { version: 'v2.0.0', instances: 45, releaseDate: '2024-06-15' },
+    { version: 'v1.2.0', instances: 30, releaseDate: '2024-03-10' },
+    { version: 'v1.1.0', instances: 15, releaseDate: '2023-11-20' },
+    { version: 'v1.0.0', instances: 8, releaseDate: '2023-08-01' },
   ];
 
   const multiplier = filter === 'verifiable-docs' ? 0.6 : filter === 'etr' ? 0.4 : 1;

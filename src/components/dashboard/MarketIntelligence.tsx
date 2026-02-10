@@ -33,6 +33,10 @@ export function MarketIntelligence({ filter }: MarketIntelligenceProps) {
             backgroundColor: 'hsl(var(--popover))',
             border: '1px solid hsl(var(--border))',
             borderRadius: '6px',
+            color: 'hsl(var(--popover-foreground))',
+          }}
+          itemStyle={{
+            color: 'hsl(var(--popover-foreground))',
           }}
         />
       </PieChart>
