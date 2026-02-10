@@ -1,5 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { Button } from "@/components/ui/button";
+import { LogOut } from "lucide-react";
 import { GlobalFilters } from "@/components/dashboard/GlobalFilters";
 import { ActivityOverview } from "@/components/dashboard/ActivityOverview";
 import { MarketIntelligence } from "@/components/dashboard/MarketIntelligence";
@@ -10,6 +13,11 @@ import { type FilterType } from "@/lib/mockData";
 
 const Dashboard = () => {
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    navigate('/login');
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -25,7 +33,12 @@ const Dashboard = () => {
                 Monitor ecosystem activity, usage distribution, and live system pulse
               </p>
             </div>
-            <ThemeToggle />
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <Button variant="ghost" size="icon" onClick={handleLogout} title="Logout">
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </header>

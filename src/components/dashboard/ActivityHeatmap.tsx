@@ -76,13 +76,16 @@ export function ActivityHeatmap({ filter }: ActivityHeatmapProps) {
         </CardHeader>
         <CardContent>
           <div className="flex gap-4">
-            <div className="flex-1 h-[400px]">
+            <div className="flex-1 overflow-hidden" style={{ maxHeight: 400 }}>
               <ComposableMap
                 projection="geoMercator"
                 projectionConfig={{
                   scale: 120,
                   center: [0, 30],
                 }}
+                width={800}
+                height={400}
+                style={{ width: '100%', height: '100%' }}
               >
                 <Geographies geography={geoUrl}>
                   {({ geographies }) =>
@@ -125,8 +128,9 @@ export function ActivityHeatmap({ filter }: ActivityHeatmapProps) {
                     <TooltipContent>
                       <div className="text-sm">
                         <p className="font-medium">{location.country}</p>
-                        <p>Issuance: {location.issuance}</p>
-                        <p>Verification: {location.verification}</p>
+                        <p>Issuance: {location.issuance.toLocaleString()}</p>
+                        <p>Verification: {location.verification.toLocaleString()}</p>
+                        <p className="text-muted-foreground text-xs mt-1">Range: {timeRange}</p>
                       </div>
                     </TooltipContent>
                   </Tooltip>

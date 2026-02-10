@@ -41,7 +41,7 @@ export function VersionDistribution({ filter }: VersionDistributionProps) {
 
   return (
     <section className="space-y-4">
-      <h2 className="text-xl font-semibold">Version Distribution (Reference)</h2>
+      <h2 className="text-xl font-semibold">Version Distribution</h2>
       
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
